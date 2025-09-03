@@ -113,9 +113,14 @@ export function Settings() {
 					reset sidebar size
 				</Button>
 			</div>
-			<Button asChild variant="link" className="mt-8">
+			<Button asChild variant="link" className="mt-2">
 				<a href="https://github.com/tmpluto/redmine-better-wiki-sidebar" target="_blank">
 					<Github className="size-4" /> source code
+				</a>
+			</Button>
+			<Button asChild variant="link" className="-mt-4 text-muted-foreground">
+				<a href="https://www.technosec.io/" target="_blank">
+					from technosec team ❤️
 				</a>
 			</Button>
 		</div>
