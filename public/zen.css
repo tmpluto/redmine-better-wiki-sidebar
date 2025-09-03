@@ -1,0 +1,21 @@
+#header,
+#top-menu { 
+	display: none;
+}
+p.breadcrumb {
+	display: none;
+}
+
+div.contextual > a:nth-child(2){
+	display: none;
+}
+
+#content {
+	& > p.wiki-update-info {
+		display: none;
+	}
+
+	& > p.other-formats {
+		display: none;
+	}
+}
