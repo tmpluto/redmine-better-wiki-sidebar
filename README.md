@@ -1,6 +1,10 @@
 # Redmine Better Wiki Sidebar
 
-- [ ] soon in chrome store
+
+<a href="https://chromewebstore.google.com/detail/redmine-better-wiki-sideb/ndgigodmaheohiopanifagmpfclcojcd" target="_blank">
+  <img src="https://developer.chrome.com/static/docs/webstore/branding/image/UV4C4ybeBTsZt43U4xis.png" alt="Available in the Chrome Web Store">
+</a>
+
 
 ![](/screenshots/Screenshot_1.png)
 
