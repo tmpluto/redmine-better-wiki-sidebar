@@ -1,7 +1,7 @@
 {
 	"manifest_version": 3,
 	"name": "Redmine Better Wiki Sidebar",
-	"version": "1.0.0",
+	"version": "1.1.0",
 	"description": "Notion-like note-taking experience in Redmine Wikis with easy navigation",
 	"homepage_url": "https://github.com/tmpluto/redmine-better-wiki-sidebar",
 	"options_ui": {

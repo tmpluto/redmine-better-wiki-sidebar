@@ -95,7 +95,7 @@ export function Settings() {
 				</a>
 			</Button>
 			<Button
-				title="export entire project wiki as pdf"
+				title="export the entire project wiki as pdf"
 				variant="default"
 				className="h-auto"
 				onClick={() =>
@@ -105,7 +105,7 @@ export function Settings() {
 					})
 				}
 			>
-				<p className="text-wrap">export entire project wiki as pdf</p>
+				<p className="text-wrap">export the entire project wiki as pdf</p>
 				<Download className="size-4" />
 			</Button>
 			<div>
