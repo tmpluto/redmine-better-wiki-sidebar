@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -24,7 +24,6 @@ import { useSidebarStore, useSmallerImgStore, useZenModeStore } from "./store";
 export function SidebarApp({ useSampleData }: { useSampleData: boolean }) {
 	const [view, setView] = useState<"tree" | "settings" | "search">("tree");
 	const [query, setQuery] = useState("");
-	const [loading, setLoading] = useState(false);
 
 	const applyZen = useZenModeStore(state => state.applyZen)
 	const applySidebarLocation = useSidebarStore(state => state.applySidebarLocation)
@@ -35,8 +34,10 @@ export function SidebarApp({ useSampleData }: { useSampleData: boolean }) {
 	const [nodes, setNodes] = useLocalStorage<WikiNode[]>({
 		key: "brws-wikiTree::" + projectWikiIndex,
 		initialValue: [],
-		escapeChromeStorage: true,
+		escapeFirefoxStorage: true,
 	});
+	const initialNodesLength = useRef(nodes.length);
+	const [loading, setLoading] = useState(nodes.length === 0);
 
 	const flatData = useMemo(() => flattenWikiTree(nodes), [nodes]);
 	const searchResults = useMemo(
@@ -46,22 +47,23 @@ export function SidebarApp({ useSampleData }: { useSampleData: boolean }) {
 
 	useEffect(() => {
 		(async () => {
-			setLoading(nodes.length === 0);
+			const hasCachedWikis = initialNodesLength.current > 0;
+			setLoading(!hasCachedWikis);
 			try {
 				const data = await fetchWikiTree(projectWikiIndex);
 				if (useSampleData) {
 					setNodes(SAMPLE_DATA);
-				} else {
+				} else if (data !== null) {
 					setNodes(data);
 				}
 			} finally {
 				setLoading(false);
 			}
 		})();
-	}, [projectWikiIndex]);
+	}, [projectWikiIndex, setNodes, useSampleData]);
 
 	useEffect(() => {
-		// Delegate styling from background service to extension
+		// Delegate styling from the background script to the extension UI
 		applyZen()
 		applySidebarLocation()
 		applySmallerImg()
@@ -92,7 +94,7 @@ export function SidebarApp({ useSampleData }: { useSampleData: boolean }) {
 			document.removeEventListener("dblclick", handleDblClick);
 			document.removeEventListener("keydown", handleExitFullScreen);
 		};
-	}, []);
+	}, [applySidebarLocation, applySmallerImg, applyZen]);
 
 
 	function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -184,7 +186,7 @@ export function SidebarApp({ useSampleData }: { useSampleData: boolean }) {
 						</div>
 					)}
 
-					{((view === "search" && searchResults.length === 0) || (view === "tree" && nodes.length === 0)) && (
+					{!loading && ((view === "search" && searchResults.length === 0) || (view === "tree" && nodes.length === 0)) && (
 						<div className="w-full p-6 flex flex-col items-center justify-center text-sm text-muted-foreground gap-2">
 							<Frown className="h-7 w-7" />
 							<p>no wikis found</p>

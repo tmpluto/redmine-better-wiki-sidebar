@@ -24,7 +24,7 @@ export const useZenModeStore = create(
 					get().applyZen();
 					
 					try {
-						chrome.storage.local.set({ [storage.zenMode.key]: zenStatus });
+						browser.storage.local.set({ [storage.zenMode.key]: zenStatus });
 					}catch {}
 				}
 					
@@ -67,13 +67,13 @@ export const useSidebarStore = create(
 					get().applySidebarLocation()
 
 					try {
-						chrome.storage.local.set({ [storage.sidebarLocation.key]: newLoc });
+						browser.storage.local.set({ [storage.sidebarLocation.key]: newLoc });
 					}catch {}
 				},
 				setSidebarWidth: (width: string) => {
 					set(() => ({ sidebarWidth: width }))
 					try {
-						chrome.storage.local.set({ [storage.sidebarWidth.key]: width });
+						browser.storage.local.set({ [storage.sidebarWidth.key]: width });
 					}catch {}
 				}
 			}
@@ -104,7 +104,7 @@ export const useSmallerImgStore = create(
 					get().applySmallerImg();
 					
 					try {
-						chrome.storage.local.set({ [storage.smallerImg.key]: smallerImgStatus });
+						browser.storage.local.set({ [storage.smallerImg.key]: smallerImgStatus });
 					}catch {}
 				}
 					

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 export type WikiNode = {
 	title: string;
@@ -20,10 +20,10 @@ export function getProjectURL(url: string): string | null {
 }
 
 
-export async function fetchWikiTree(url: string): Promise<WikiNode[]> {
+export async function fetchWikiTree(url: string): Promise<WikiNode[] | null> {
 	try {
-		// const response = await fetch(url, { credentials: "include" });
-		const response = await fetch(url);
+		const response = await fetch(url, { credentials: "include" });
+		if (!response.ok) return null;
 		const htmlText = await response.text();
 
 		// parse html text
@@ -53,7 +53,7 @@ export async function fetchWikiTree(url: string): Promise<WikiNode[]> {
 
 		const wikiTreeDom = doc.querySelector("div#content > ul.pages-hierarchy");
 
-		if (!wikiTreeDom) return [];
+		if (!wikiTreeDom) return null;
 
 		Array.from(wikiTreeDom.querySelectorAll("& > li")).forEach((li) => {
 			result.push(returnTreeFromLi(li));
@@ -62,7 +62,7 @@ export async function fetchWikiTree(url: string): Promise<WikiNode[]> {
 		return result;
 	} catch (error) {
 		console.error("Failed to fetch wiki tree:", error);
-		return [];
+		return null;
 	}
 }
 
@@ -81,7 +81,7 @@ export function flattenWikiTree(nodes: WikiNode[]): { title: string; link: strin
 }
 
 
-export function useLocalStorage<T>({ key, initialValue, escapeChromeStorage = false }: { key: string; initialValue: T, escapeChromeStorage?: boolean }) {
+export function useLocalStorage<T>({ key, initialValue, escapeFirefoxStorage = false }: { key: string; initialValue: T, escapeFirefoxStorage?: boolean }) {
 	const [value, setStateValue] = useState<T>(() => {
 	  try {
 		const stored = localStorage.getItem(key);
@@ -91,17 +91,17 @@ export function useLocalStorage<T>({ key, initialValue, escapeChromeStorage = fa
 	  }
 	});
   
-	const setValue = (newValue: T) => {
+	const setValue = useCallback((newValue: T) => {
 	  setStateValue(newValue);
 	  try {
 		localStorage.setItem(key, JSON.stringify(newValue));
-		if(!escapeChromeStorage){
-			chrome.storage.local.set({ [key]: newValue });
+		if(!escapeFirefoxStorage){
+			browser.storage.local.set({ [key]: newValue });
 		}
 	  } catch {
 		// ...
 	  }
-	};
+	}, [escapeFirefoxStorage, key]);
   
 	return [value, setValue] as const;
   }

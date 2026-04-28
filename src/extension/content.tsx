@@ -8,7 +8,7 @@ import { doesUrlMatchWithCustomDomainRegex, isTargetUrl, MyConstants } from "./f
 async function injectTailwindPropertiesOnce() {
 	try {
 		if (document.head.querySelector("style[data-tailwind-properties='true']")) return;
-		const cssUrl = chrome.runtime.getURL("assets/content.css");
+		const cssUrl = browser.runtime.getURL("assets/content.css");
 		const res = await fetch(cssUrl);
 		const styles = await res.text();
 		const idx = styles.indexOf("@property");
@@ -26,7 +26,7 @@ function ensureShadowStyles(shadowRoot: ShadowRoot) {
 	if (shadowRoot.querySelector("link[data-ext-style='true']")) return;
 	const linkEl = document.createElement("link");
 	linkEl.rel = "stylesheet";
-	linkEl.href = chrome.runtime.getURL("assets/content.css");
+	linkEl.href = browser.runtime.getURL("assets/content.css");
 	linkEl.setAttribute("data-ext-style", "true");
 	shadowRoot.appendChild(linkEl);
 }
@@ -59,21 +59,20 @@ function mountReactApp() {
 
 (async function init() {
 	const storage = MyConstants.storage;
-	chrome.storage.local.get([MyConstants.storage.customDomainRegexString.key, MyConstants.storage.useCustomDomainRegex.key], async (items) => {
-		const useCustomDomainRegex = (items[storage.useCustomDomainRegex.key] as boolean) || storage.useCustomDomainRegex.defaultVal;
-		const customDomainRegexString = (items[storage.customDomainRegexString.key] as string) || storage.customDomainRegexString.defaultVal;
-		if(useCustomDomainRegex){
-			if(!doesUrlMatchWithCustomDomainRegex(customDomainRegexString, window.location.href)){
-				return;
-			}
-		}else {
-			if (!isTargetUrl(window.location.href)){
-				return;
-			}
+	const items = await browser.storage.local.get([MyConstants.storage.customDomainRegexString.key, MyConstants.storage.useCustomDomainRegex.key]);
+	const useCustomDomainRegex = (items[storage.useCustomDomainRegex.key] as boolean) || storage.useCustomDomainRegex.defaultVal;
+	const customDomainRegexString = (items[storage.customDomainRegexString.key] as string) || storage.customDomainRegexString.defaultVal;
+	if(useCustomDomainRegex){
+		if(!doesUrlMatchWithCustomDomainRegex(customDomainRegexString, window.location.href)){
+			return;
 		}
+	}else {
+		if (!isTargetUrl(window.location.href)){
+			return;
+		}
+	}
 
-		await injectTailwindPropertiesOnce();
-		mountReactApp();
-	});
+	await injectTailwindPropertiesOnce();
+	mountReactApp();
 })();
 
