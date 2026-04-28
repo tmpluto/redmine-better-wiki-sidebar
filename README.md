@@ -1,5 +1,7 @@
 # Redmine Better Wiki Sidebar
 
+(Note: Firefox version link: https://github.com/tmpluto/redmine-better-wiki-sidebar/tree/firefox-version)
+
 <a href="https://chromewebstore.google.com/detail/redmine-better-wiki-sideb/ndgigodmaheohiopanifagmpfclcojcd?utm_source=github" target="_blank">
   <img src="https://developer.chrome.com/static/docs/webstore/branding/image/UV4C4ybeBTsZt43U4xis.png" alt="Available in the Chrome Web Store">
 </a>
